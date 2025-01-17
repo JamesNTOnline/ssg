@@ -1,6 +1,8 @@
 from htmlnode import HTMLNode
 
 class LeafNode(HTMLNode):
+    # self closing tags need different handling 
+    VOID_ELEMENTS = frozenset(["br", "hr", "img"]) # frozense is immutable
     
     def __init__(self, tag, value, props=None):
         """
@@ -12,8 +14,16 @@ class LeafNode(HTMLNode):
         """
         super().__init__(tag, value, None, props)
         
+    # should void elements have a value?
+    # br and img behave differently - br never has a value, img might have attributes
+    # wont deal with this for now, but something to think about
     def to_html(self):
-        if self.value == None:
+        #print(f"Tag: {self.tag}, Is void: {self.tag in self.VOID_ELEMENTS}")  # debug
+        if self.value is None: # what about "" - empty string? <br> doesn't have a value
             raise ValueError("Value cannot be None")
-        if self.tag == None:
-            return self.value 
+        elif self.tag is None:
+            return self.value
+        elif self.tag in self.VOID_ELEMENTS:
+            return f"<{self.tag}{self.props_to_html()}/>" #format self closing tags differently
+        else:
+            return f"<{self.tag}{self.props_to_html()}>{self.value}</{self.tag}>"

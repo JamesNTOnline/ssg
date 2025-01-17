@@ -1,5 +1,12 @@
 
+
 class HTMLNode:
+    """Base class for HTML nodes in a document tree.
+    
+    Attributes:
+        tag: The HTML tag name
+        props: HTML attributes as key-value pairs
+    """
 
     def __init__(self, tag=None, value=None, children=None, props=None):
         """
@@ -21,7 +28,7 @@ class HTMLNode:
     def props_to_html(self):
         if self.props is None:
             return ""
-        return " ".join([f"{key}='{value}'" for key, value in self.props.items()])
+        return " " +" ".join([f"{key}='{value}'" for key, value in self.props.items()])
 
     def __repr__(self):
         return f"HTMLNode({self.tag}, {self.value}, {self.children}, {self.props})"
