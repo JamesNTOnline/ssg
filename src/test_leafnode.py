@@ -2,7 +2,7 @@ import unittest
 
 from leafnode import LeafNode
 
-class TestTextNode(unittest.TestCase):
+class TestLeafNode(unittest.TestCase):
     def setUp(self):
         self.leaf_no_value = LeafNode("p", None)
         self.leaf_no_tag = LeafNode(None, "Hola, mundo!")
