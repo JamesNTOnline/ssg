@@ -1,6 +1,7 @@
 import unittest 
-
+import test_setup 
 from leafnode import LeafNode
+
 
 class TestLeafNode(unittest.TestCase):
     def setUp(self):

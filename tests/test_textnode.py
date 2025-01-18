@@ -1,6 +1,7 @@
 import unittest 
-
+import test_setup 
 from textnode import TextNode, TextType
+
 
 class TestTextNode(unittest.TestCase):
     def setUp(self):

@@ -1,7 +1,7 @@
-
-import unittest 
 import unittest
+import test_setup 
 from htmlnode import HTMLNode
+
 
 class TestHTMLNode(unittest.TestCase):
 
