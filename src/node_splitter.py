@@ -1,7 +1,8 @@
 from textnode import TextType, TextNode
+from markdown_extraction import extract_markdown_images, extract_markdown_links
 
 
-def split_nodes(old_nodes, delimiter, text_type):
+def split_formatted_nodes(old_nodes, delimiter, text_type):
     """
     Splits a list of nodes based on a given delimiter and text type
     Args:
@@ -27,4 +28,37 @@ def split_nodes(old_nodes, delimiter, text_type):
         else:
             new_nodes.append(node)
     return new_nodes
-            
+    
+
+
+
+def split_nodes_image(old_nodes):
+    """
+    Splits a list of nodes and extracts images from text nodes.
+    Args:
+        old_nodes (list): List of nodes to be split
+    Returns:
+        list: A new list of nodes with image nodes extracted from text nodes
+    """
+    new_nodes = []
+    for node in old_nodes:
+        if node.text_type == TextType.TEXT:
+            images = extract_markdown_images(node.text)
+            parts = node.text
+            if images: 
+                for image in images:
+                    parts = parts.split(f"![{image[0]}]({image[1]})", 1)
+                    new_nodes.append(TextNode(parts[0], TextType.TEXT))
+                    new_nodes.append(TextNode(image[0], TextType.IMAGE, image[1]))
+                    parts = parts[1]
+                if not parts == "":
+                    new_nodes.append(TextNode(parts, TextType.TEXT))
+            else:
+                new_nodes.append(node)
+        else:
+            new_nodes.append(node)
+    return new_nodes
+
+
+def split_nodes_link(old_nodes):
+    pass
