@@ -15,7 +15,6 @@ class TextNode:
         self.url = url 
      
         
-        
     def __eq__(self, other_node):
         if not isinstance(other_node, TextNode):
             return NotImplemented

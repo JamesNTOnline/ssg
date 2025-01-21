@@ -31,4 +31,5 @@ class TestNodeSplitter(unittest.TestCase):
         self.assertEqual(new_nodes[2].text_type, TextType.TEXT)
         self.assertEqual(new_nodes[3].text_type, TextType.CODE)
         self.assertEqual(new_nodes[4].text_type, TextType.TEXT)
-        
+
+

@@ -21,21 +21,9 @@ def split_nodes(old_nodes, delimiter, text_type):
             if len(parts) % 2 == 0:
                 raise Exception("Unpaired delimiter found, invalid Markdown")
             else:
-                #nodes_to_add = []
                 for i, part in enumerate(parts):
                     node_type = TextType.TEXT if i % 2 == 0 else text_type
                     new_nodes.append(TextNode(part, node_type))
-           
-           # text = node.text
-            #while True:
-               # start = text.find(delimiter)
-                #if start != -1: #  delimiter found
-                    #end = start + len(delimiter) # find where the text starts
-                    # find the closing delimiter 
-                    # make a node from the text in between
-                    # ???
-            
-            
         else:
             new_nodes.append(node)
     return new_nodes
