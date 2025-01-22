@@ -1,6 +1,6 @@
 import unittest
 import test_setup 
-from node_converter import text_node_to_html_node
+from node_converter import text_node_to_html_node, text_to_textnodes
 from textnode import TextNode, TextType
 
 
@@ -28,6 +28,16 @@ class TestNodeConverter(unittest.TestCase):
         with self.assertRaises(ValueError):
             text_node_to_html_node(self.text_node_underline)
         
-        
+    def test_text_to_textnode_bold(self):
+        text = "This is a **bold** text"
+        expected = [
+            TextNode("This is a ", TextType.TEXT),
+            TextNode("bold", TextType.BOLD),
+            TextNode(" text", TextType.TEXT)   
+        ]
+        actual = text_to_textnodes(text)
+        self.assertEqual(expected, actual)
+    
+    
 if __name__ == "__main__":
     unittest.main()
