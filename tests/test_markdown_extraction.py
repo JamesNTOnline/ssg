@@ -59,4 +59,9 @@ class TestExtraction(unittest.TestCase):
         self.assertEqual(blocks[2], "* List start\n  * Indented list\n* List end")
         self.assertEqual(blocks[3], "Last paragraph")
         
-        
+    # further tests:
+    # more negative tests 
+    # test with empty string
+    # test with empty blocks
+    # test with only spaces
+    # test with only newlines
