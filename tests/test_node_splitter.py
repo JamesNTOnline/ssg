@@ -6,16 +6,19 @@ from textnode import TextNode, TextType
 class TestNodeSplitter(unittest.TestCase):
     
     def test_split_with_paired_delimiters(self):
+        # checks that we find pairs of delimiters and split the text accordingly
         old_nodes = [TextNode("This `is text` with a `code block` word", TextType.TEXT)]
         new_nodes = split_formatted_nodes(old_nodes, "`", TextType.CODE)
         self.assertEqual(len(new_nodes), 5)
         
     def test_split_with_unpaired_delimiters(self):
+        # checks unpaired delimiters aren't accepted 
         unclosed_nodes = [TextNode("This `is text` with a `code block word", TextType.TEXT)]
         with self.assertRaises(Exception, msg="Unpaired delimiter found, invalid Markdown"):
             split_formatted_nodes(unclosed_nodes, "`", TextType.CODE)
         
     def test_multiple_calls(self):
+        # checks that the function can be called multiple times on the same list 
         node = [TextNode("This is **BOLD** text with a `code block`", TextType.TEXT)]
         expected = [
             TextNode("This is ", TextType.TEXT),
@@ -30,9 +33,9 @@ class TestNodeSplitter(unittest.TestCase):
         for i in range(len(expected)):
             self.assertEqual(actual[i].text, expected[i].text)
             self.assertEqual(actual[i].text_type, expected[i].text_type)
-    
-    
+       
     def test_split_image(self):
+        # checks that image links are correctly split from text
         node = TextNode("Here's a ![cat](cat.png) and a ![dog](dog.png)", TextType.TEXT)
         expected = [
             TextNode("Here's a ", TextType.TEXT),
@@ -50,6 +53,7 @@ class TestNodeSplitter(unittest.TestCase):
         
 
     def test_split_link(self):
+        # checks that links are correctly split from text
         node = TextNode("This is text with a link [to twitter](https://x.com) and [to google](https://www.google.com/)", TextType.TEXT)
         expected = [
             TextNode("This is text with a link ", TextType.TEXT),
@@ -66,6 +70,7 @@ class TestNodeSplitter(unittest.TestCase):
                 self.assertEqual(actual[i].url, expected[i].url)
                 
     def test_split_image_and_link(self):
+        # checks that both functions can be successfully called on the same list
         node = TextNode("Here's a ![cat](cat.png) and a link [to twitter](https://x.com)", TextType.TEXT)
         expected = [
             TextNode("Here's a ", TextType.TEXT),
@@ -75,9 +80,4 @@ class TestNodeSplitter(unittest.TestCase):
         ]
         actual = split_nodes_image([node])
         actual = split_nodes_link(actual)
-        self.assertEqual(len(actual), len(expected))
-        for i in range(len(expected)):
-            self.assertEqual(actual[i].text, expected[i].text)
-            self.assertEqual(actual[i].text_type, expected[i].text_type)
-            if expected[i].url:
-                self.assertEqual(actual[i].url, expected[i].url)
+        self.assertEqual(actual, expected)
