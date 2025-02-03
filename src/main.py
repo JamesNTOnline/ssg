@@ -14,7 +14,6 @@ def copy_static(src_dir, dest_dir):
         if os.path.isfile(src_path):
             shutil.copy(src_path, dest_path)
         else:
-            #os.mkdir(dest_path)
             copy_static(src_path, dest_path)
     
     
