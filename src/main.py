@@ -3,48 +3,63 @@ from node_converter import markdown_to_html_node
 from markdown_extraction import extract_markdown_title
 import os
 import shutil
+from pathlib import Path
 
 def copy_static(src_dir, dest_dir):
-    if not os.path.exists(src_dir):
-        raise Exception(f"Source directory '{src_dir}' does not exist")
-    if os.path.exists(dest_dir):
-        shutil.rmtree(dest_dir)
-    os.mkdir(dest_dir)
-    contents = os.listdir(src_dir)
-    for item in contents:
-        src_path = os.path.join(src_dir, item)
-        dest_path = os.path.join(dest_dir, item)
-        if os.path.isfile(src_path):
-            shutil.copy(src_path, dest_path)
+    src = Path(src_dir)
+    dest = Path(dest_dir)
+    if not src.exists():
+        raise Exception(f"Source directory '{src}' does not exist")
+    if dest.exists():
+        shutil.rmtree(dest)
+    dest.mkdir()
+    for item in src.iterdir():
+        dest_path = dest / item.name
+        if item.is_file():
+            shutil.copy(item, dest_path)
         else:
-            copy_static(src_path, dest_path)
+            copy_static(item, dest_path)
+ 
+def read_file(path):
+    path = Path(path)
+    if not path.exists():
+        raise Exception(f"File '{path}' does not exist")
+    return path.read_text()    
+
+def process_template(template, content, title):
+    return template.replace("{{ Content }}", content).replace("{{ Title }}", title) 
     
 def generate_page(from_path, template_path, dest_path):
+    from_path = Path(from_path)
+    template_path = Path(template_path)
+    dest_path = Path(dest_path)
     print(f"Generating page from {from_path} to {dest_path} using template {template_path}")
     markdown = read_file(from_path)
     template = read_file(template_path)
     html = markdown_to_html_node(markdown).to_html()
     title = extract_markdown_title(markdown)
     page = process_template(template, html, title)
-    os.makedirs(os.path.dirname(dest_path), exist_ok=True)
-    with open(dest_path, "w") as f:
-        f.write(page)
-    
-def read_file(path):
-    if not os.path.exists(path):
-        raise Exception(f"File '{path}' does not exist")
-    with open(path, "r") as f:
-        return f.read()    
+    dest_path.parent.mkdir(parents=True, exist_ok=True)
+    dest_path.write_text(page)
 
-def process_template(template, content, title):
-    return template.replace("{{ Content }}", content).replace("{{ Title }}", title)
-
+def generate_pages_recursive(dir_path_cntnt, template_path, dest_dir_path):
+    dir_path = Path(dir_path_cntnt)
+    dest_dir = Path(dest_dir_path)
+    dest_dir.mkdir(parents=True, exist_ok=True)
+    for item in dir_path.iterdir():
+        if item.is_dir():
+            new_dest = dest_dir / item.name
+            new_dest.mkdir(parents=True, exist_ok=True)
+            generate_pages_recursive(item, template_path, new_dest)
+        elif item.suffix == '.md':
+            new_dest = dest_dir / item.with_suffix('.html').name
+            generate_page(str(item), template_path, str(new_dest))
 
 def main():
     node_one = TextNode("This is a text node", TextType.BOLD, "https://www.boot.dev")
     print(node_one)
     copy_static("static", "public")
-    generate_page("content/index.md", "template.html", "public/index.html")
+    generate_pages_recursive("content", "template.html", "public")
     
 
 if __name__ == "__main__":
