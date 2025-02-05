@@ -103,7 +103,7 @@ def code_block_to_html_node(block):
     return ParentNode("pre", [code_node])
 
 def quote_block_to_html_node(block):
-    contents = block.replace("\n>", "\n").lstrip(">")
+    contents = block.replace("\n>", "\n").lstrip(">").strip()
     child_nodes = text_to_children(contents)
     return ParentNode("blockquote", child_nodes)
 

@@ -1,7 +1,6 @@
 import unittest 
 import test_setup 
-from markdown_extraction import extract_markdown_images, extract_markdown_links, markdown_to_blocks
-
+from markdown_extraction import *
 
 class TestExtraction(unittest.TestCase):
     
@@ -58,7 +57,17 @@ class TestExtraction(unittest.TestCase):
         self.assertEqual(blocks[1], "Paragraph with\nmultiple lines\n    and weird spacing")
         self.assertEqual(blocks[2], "* List start\n  * Indented list\n* List end")
         self.assertEqual(blocks[3], "Last paragraph")
-        
+    
+    def test_extract_markdown_title(self):
+        markdown = "# This is a title\n\nThis is a paragraph\n\nThis is another paragraph"
+        title = extract_markdown_title(markdown)
+        self.assertEqual(title, "This is a title")
+    
+    def test_extract_markdown_title_with_no_title(self):
+        markdown = "This is a paragraph\n\n## This is a subheading\n\nThis is another paragraph"
+        with self.assertRaises(ValueError, msg="No title found"):
+            extract_markdown_title(markdown)
+    
     # further tests:
     # more negative tests 
     # test with empty string

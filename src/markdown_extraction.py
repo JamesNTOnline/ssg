@@ -23,6 +23,18 @@ def extract_markdown_links(text):
     else:
         raise TypeError("Input must be a string")
     
+def extract_markdown_title(markdown):
+    if isinstance(markdown, str):
+        title = None
+        match = re.search(r"^# (.*)", markdown)
+        if match:
+            title = match.group(1)
+            return title
+        else: 
+            raise ValueError("No title found")
+    else:
+        raise TypeError("Input must be a markdown string")
+    
 def markdown_to_blocks(markdown):
     """
     Break a markdown document into a list of text blocks
